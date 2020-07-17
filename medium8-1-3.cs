@@ -1,7 +1,15 @@
+using System.Collections.Generic;
+
 class Bag
 {
-    public List<Item> Items;
-    public int MaxWeidth; 
+    private readonly List<Item> _items;
+    private readonly int _maxWeidth; 
+
+    public Bag(int maxWeidth, List<Item> items)
+    {
+        _maxWeidth = maxWeidth;
+        _items = items;
+    } 
 
     public void AddItem(string name, int count)
     {
@@ -21,5 +29,6 @@ class Bag
 class Item
 {
     public int Count;
-    public string Name;
+    public readonly string Name;
+
 }
