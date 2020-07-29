@@ -2,7 +2,7 @@ using System.Collections.Generic;
 
 class Bag
 {
-    private readonly List<Item> _items;
+    public readonly List<Item> _items;
     private readonly int _maxWeidth; 
 
     public Bag(int maxWeidth, List<Item> items)
