@@ -4,19 +4,19 @@ using System.Linq;
 
 class Bag
 {
-    private List<Item> _items;
+    private List<Item> Items;
     private readonly int _maxWeidth;
 
     public Bag(int maxWeidth, List<Item> items)
     {
         _maxWeidth = maxWeidth;
-        _items = items;
+        Items = items;
     }
 
     public void AddItem(string name, int count)
     {
-        int currentWeidth = _items.Sum(item => item.Count);
-        Item targetItem = _items.FirstOrDefault(item => item.Name == name);
+        int currentWeidth = Items.Sum(item => item.Count);
+        Item targetItem = Items.FirstOrDefault(item => item.Name == name);
 
         if (targetItem == null)
             throw new InvalidOperationException();
@@ -24,16 +24,22 @@ class Bag
         if (currentWeidth + count > _maxWeidth)
             throw new InvalidOperationException();
 
-        targetItem.CountPlus(count);
+        targetItem.AddCount(count);
     }
-
-    public IEnumerable<Item> GetItems()
+    //"Столкнётесь после освоения темы полиморфизм подтипов". Задача в теме "Инкапсуляция".
+    public IEnumerable<IUpdateable> GetItems()
     {
-        return _items.AsEnumerable();
+        return Items; // или return _items.AsEnumerable();
     }
 }
 
-class Item
+interface IUpdateable
+{
+    string GetName();
+    int GetCount();
+}
+
+class Item : IUpdateable
 {
     public readonly string Name;
     public int Count { get; private set; }
@@ -44,8 +50,12 @@ class Item
         Count = count;
     }
 
-    public void CountPlus(int count)
+    public void AddCount(int count)
     {
         Count += count;
     }
+
+    public string GetName() => Name;
+
+    public int GetCount() => Count;
 }
