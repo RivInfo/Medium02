@@ -4,55 +4,52 @@ using System.Linq;
 
 class Bag
 {
-    private List<Item> Items;
+    private List<Item> _items;
     private readonly int _maxWeidth;
 
     public Bag(int maxWeidth, List<Item> items)
     {
+        if(items.Sum(item => item.Count)> maxWeidth)
+            throw new ArgumentOutOfRangeException();
         _maxWeidth = maxWeidth;
-        Items = items;
+        _items = items;
     }
 
     public void AddItem(string name, int count)
     {
-        int currentWeidth = Items.Sum(item => item.Count);
-        Item targetItem = Items.FirstOrDefault(item => item.Name == name);
-
-        if (targetItem == null)
-            throw new InvalidOperationException();
+        int currentWeidth = _items.Sum(item => item.Count);
+        Item targetItem = _items.FirstOrDefault(item => item.Name == name);
 
         if (currentWeidth + count > _maxWeidth)
             throw new InvalidOperationException();
 
-        targetItem.AddCount(count);
+        if (targetItem == null)
+            _items.Add(new Item(name, count));
+        else
+            targetItem.Count += count;
     }
-    //"Столкнётесь после освоения темы полиморфизм подтипов". Задача в теме "Инкапсуляция".
-    public IEnumerable<IUpdateable> GetItems()
+
+    public IEnumerable<IItem> GetItems()
     {
-        return Items; // или return _items.AsEnumerable();
+        return _items;
     }
 }
 
-interface IUpdateable
+interface IItem
 {
     string GetName();
     int GetCount();
 }
 
-class Item : IUpdateable
+class Item : IItem
 {
     public readonly string Name;
-    public int Count { get; private set; }
+    public int Count;
 
     public Item(string name, int count)
     {
         Name = name;
         Count = count;
-    }
-
-    public void AddCount(int count)
-    {
-        Count += count;
     }
 
     public string GetName() => Name;
